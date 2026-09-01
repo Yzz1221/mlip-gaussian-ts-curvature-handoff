@@ -1,0 +1,11 @@
+%chk=external_calcfc.chk
+%nprocshared=4
+#P Opt=(TS,CalcFC,NoEigenTest,NoMicro,MaxCycles=150) Freq External='./horm_external.sh'
+
+Continuous-MLIP control: Gaussian Berny driver with External E/F/H
+
+0 1
+C   0.000000   0.000000   0.000000
+O   1.220000   0.000000   0.000000
+H  -0.550000   0.930000   0.000000
+H  -0.550000  -0.930000   0.000000

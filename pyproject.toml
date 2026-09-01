@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mlip-gaussian-ts-curvature-handoff"
+version = "0.1.0"
+description = "One-shot MLIP Hessian handoff to Gaussian TS optimization"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24"]
+
+[project.optional-dependencies]
+test = ["pytest>=8"]
+
+[project.scripts]
+mlip-gaussian-prepare = "mlip_gaussian_handoff.cli:prepare_main"
+mlip-gaussian-run = "mlip_gaussian_handoff.cli:run_main"
+mlip-gaussian-audit = "mlip_gaussian_handoff.cli:audit_main"
+mlip-gaussian-write-irc = "mlip_gaussian_handoff.cli:write_irc_main"
+mlip-gaussian-external = "mlip_gaussian_handoff.external:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

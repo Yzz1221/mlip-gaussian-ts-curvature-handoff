@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+dist/
+build/
+*.egg-info/
+
+# ML checkpoints and arrays
+*.ckpt
+*.pt
+*.pth
+*.npy
+*.npz
+
+# Gaussian and scheduler outputs
+*.chk
+*.fchk
+*.log
+*.rwf
+*.int
+*.d2e
+*.scr
+fort.*
+Gau-*
+slurm-*.out
+slurm-*.err
+
+# Generated work directories
+work/
+results/
+run_stats/
+*.EIn
+*.EOu
+*.sock
+
+# Secrets and local configuration
+.env
+*.pem
+*.key
+local_config.*
+
+# Editors / OS
+.DS_Store
+*.swp
+*~

@@ -111,6 +111,8 @@ def normalize_packaged_input(path: Path, workflow: str) -> None:
         )
         if count != 1:
             raise RuntimeError(f"Missing Gaussian External directive in {path}")
+        if path.name == "irc.gjf":
+            text = re.sub(r"(?i)\s+Guess=Read\b", "", text)
     path.write_text(text, encoding="utf-8")
 
 

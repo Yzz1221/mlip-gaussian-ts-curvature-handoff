@@ -157,6 +157,8 @@ handoff are created by the running code from the matching CalcFC starting
 geometry and charge. External inputs refer to the repository's
 `production/external/horm.sh` by a relative path, and each IRC input refers to
 the final checkpoint from its own Opt+Freq workflow.
+External IRC keeps `Geom=AllCheck` and omits `Guess=Read`, matching the
+production External route without requesting a QM wavefunction guess.
 
 The original 960 Transition1x reactant/product pairs remain available in
 [`data/transition1x_960.tar.gz`](data/transition1x_960.tar.gz).

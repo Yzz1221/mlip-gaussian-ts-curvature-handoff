@@ -1,5 +1,5 @@
 %oldchk=../TS+Freq/ts_freq.chk
 %chk=irc.chk
 %nprocshared=4
-#P IRC=(MaxPoints=30,RCFC,LQA,StepSize=15) Geom=AllCheck Guess=Read External='../../../../../production/external/horm.sh'
+#P IRC=(MaxPoints=30,RCFC,LQA,StepSize=15) Geom=AllCheck External='../../../../../production/external/horm.sh'
 

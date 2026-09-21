@@ -55,6 +55,7 @@ class ExampleRunnerTests(unittest.TestCase):
             self.assertEqual((geometry.charge, geometry.multiplicity), (0, 1))
             self.assertIn("External='./horm.sh'", (output / "opt_freq.gjf").read_text())
             self.assertIn("%oldchk=ts_freq.chk", (output / "irc.gjf").read_text())
+            self.assertNotIn("Guess=Read", (output / "irc.gjf").read_text())
 
     def test_five_reaction_example_uses_example_tree(self):
         root = Path(__file__).resolve().parents[1]

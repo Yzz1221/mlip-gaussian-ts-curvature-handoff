@@ -7,9 +7,11 @@ all subsequent energies, gradients, TS optimization, frequency analysis, and
 IRC calculations can then be performed on the selected QM potential-energy
 surface.
 
-This repository currently contains **code only**. Manuscript files, figures,
-source data, model checkpoints, third-party datasets, and Gaussian production
-outputs are intentionally excluded.
+The repository includes the two workflows evaluated in the accompanying
+study, the raw 960-reaction benchmark input archive, release metadata for the
+EquiformerV2 checkpoint used in production, and pinned upstream ReactBench and
+HORM source trees. Processed analysis tables, figures, and Gaussian production
+outputs are not included.
 
 ## Workflow
 
@@ -36,19 +38,45 @@ scripts/                     command-line wrappers
 examples/                    Gaussian and Slurm templates
 docs/                        workflow, configuration, and provenance notes
 tests/                       tests that do not require Gaussian or HORM
+data/                        raw 960-reaction input archive and manifests
+models/                      EquiformerV2 release metadata and reconstruction
+third_party/                 pinned ReactBench and HORM Git submodules
 ```
+
+The two study workflows map to the following code paths:
+
+- **MLIP--OneShot--ReadFC:**
+  `src/mlip_gaussian_handoff/workflow.py` and the
+  `mlip-gaussian-prepare` command;
+- **External--CalcAll:** `src/mlip_gaussian_handoff/external.py`,
+  `scripts/horm_external.sh`, and
+  `examples/gaussian/external_calcall.gjf`.
+
+Clone the repository with its pinned upstream frameworks:
+
+```bash
+git clone --recurse-submodules \
+  https://github.com/Yzz1221/mlip-gaussian-ts-curvature-handoff.git
+cd mlip-gaussian-ts-curvature-handoff
+```
+
+Download the EquiformerV2 checkpoint assets from the
+[`eqv2-model-v1` release](https://github.com/Yzz1221/mlip-gaussian-ts-curvature-handoff/releases/tag/eqv2-model-v1)
+and reconstruct the checkpoint as described in
+[`models/README.md`](models/README.md).
 
 ## External requirements
 
 - Python 3.10+
 - NumPy
 - PyTorch and PyTorch Geometric versions compatible with the HORM checkout
-- a local [HORM](https://github.com/yhong55/HORM) checkout and model checkpoint
+- the pinned [HORM](third_party/HORM) checkout and the released EquiformerV2
+  checkpoint
 - Gaussian 16 plus `formchk` and `unfchk`
-- optional: [ReactBench](https://github.com/yueguanwen/ReactBench) for endpoint
+- optional: [ReactBench](third_party/ReactBench) for endpoint
   connectivity classification
 
-Gaussian and the ML checkpoint are not distributed by this repository.
+Gaussian is proprietary software and is not distributed by this repository.
 
 ## Installation
 
@@ -57,8 +85,8 @@ python -m venv .venv
 source .venv/bin/activate
 pip install -e .
 
-export HORM_ROOT=/path/to/HORM
-export HORM_CHECKPOINT=/path/to/eqv2.ckpt
+export HORM_ROOT="$PWD/third_party/HORM"
+export HORM_CHECKPOINT="$PWD/models/eqv2.ckpt"
 export HORM_DEVICE=cpu          # or cuda
 ```
 
@@ -124,12 +152,21 @@ the selected ML checkpoint.
 
 ## Data and provenance policy
 
-Do not commit checkpoints, third-party datasets, Gaussian production trees,
-scheduler logs, credentials, or machine-specific absolute paths. See
+The repository distributes the raw 960-reaction input archive, while the
+single EquiformerV2 checkpoint used in the study is attached to the
+`eqv2-model-v1` GitHub release. It excludes processed datasets, derived result
+tables, Gaussian production trees, scheduler logs, credentials, and
+machine-specific paths. See
+[data/README.md](data/README.md), [models/README.md](models/README.md),
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md), and
 [docs/provenance.md](docs/provenance.md).
+
+ReactBench, HORM, and Transition1x must be cited when their code, model, or
+data are used. Ready-to-import entries are provided in
+[CITATIONS.bib](CITATIONS.bib).
 
 ## Status
 
-This is an initial code-only release assembled from the research workflow.
-Before assigning a DOI, freeze the HORM commit/checkpoint hash, dependency lock,
-Gaussian revision, and one public minimal regression example.
+The upstream commits, model checksum, dataset checksum, and production
+workflow entry points are frozen in this repository. Before assigning a DOI,
+archive the GitHub release and record its commit identifier in the manuscript.

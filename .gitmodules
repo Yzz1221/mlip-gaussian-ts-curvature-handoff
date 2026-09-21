@@ -1,0 +1,6 @@
+[submodule "third_party/ReactBench"]
+	path = third_party/ReactBench
+	url = https://github.com/deepprinciple/ReactBench.git
+[submodule "third_party/HORM"]
+	path = third_party/HORM
+	url = https://github.com/deepprinciple/HORM.git

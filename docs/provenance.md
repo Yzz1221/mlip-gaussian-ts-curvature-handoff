@@ -11,14 +11,14 @@ the original experiment and manuscript directories unchanged.
 - minimal Gaussian and Slurm templates;
 - unit tests and reproducibility documentation;
 - the raw 960-reaction benchmark input archive;
+- the prepared GSM (871) and React-OT (960) initial TS guesses, with manifests;
 - release metadata and reconstruction instructions for the production
   EquiformerV2 checkpoint;
 - pinned ReactBench and HORM source trees as Git submodules.
 
 ## Not included
 
-- processed or derived benchmark datasets;
-- GSM and React-OT generated TS guesses;
+- optimized structures and derived benchmark result tables;
 - Gaussian executables or licensed files;
 - production gjf/chk/fchk/log/IRC trees;
 - manuscript, SI, figures, figure source data, or unpublished tables;

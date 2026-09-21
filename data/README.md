@@ -1,4 +1,25 @@
-# Raw 960-reaction benchmark input
+# Benchmark inputs and TS-guess datasets
+
+The two prepared initial-guess collections are distributed separately:
+
+| Directory | Initial-guess method | Structures |
+|---|---|---:|
+| `gsm/` | GSM on the MLIP PES | 871 |
+| `react_ot/` | React-OT | 960 |
+
+Each `rxn<ID>.xyz` contains one unoptimized TS guess with Cartesian coordinates
+in angstrom. Files are copied without modification from the source population
+used to construct the core-scaling calculation manifests. Atom ordering and
+coordinates were checked against the corresponding Gaussian starting inputs.
+The per-directory `manifest.csv` lists reaction ID, atom count, charge,
+multiplicity, relative source path, and SHA256 of each structure.
+
+GSM has 871 structures because 89 of the 960 reactions did not produce a
+converged GSM path. These are complete available initial-guess collections,
+not subsets selected by subsequent Gaussian optimization success. Matching
+reaction IDs identify the same benchmark reaction across the two directories.
+
+## Original reaction-pair archive
 
 `transition1x_960.tar.gz` contains the 960 raw reaction-pair XYZ files used to
 define the benchmark cohort. Each file stores the reactant and product
@@ -6,10 +27,9 @@ structures for one reaction ID. The archive is the unmodified `ts1x.tar.gz`
 distributed with the local ReactBench checkout and matches the expanded
 ReactBench `data/ts1x/` directory file by file.
 
-This directory intentionally contains no React-OT or GSM TS guesses, energies,
-ML predictions, Gaussian inputs or outputs, optimization outcomes, IRC
-classifications, timing tables, selected top-100 subsets, or other processed
-data.
+The reaction-pair archive is distinct from the generated initial guesses in
+`gsm/` and `react_ot/`. Neither initial-guess directory contains optimized TSs,
+Gaussian calculation outputs, recovery classifications, or timing results.
 
 ## Integrity
 

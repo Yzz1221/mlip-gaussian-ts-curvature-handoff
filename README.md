@@ -8,7 +8,8 @@ IRC calculations can then be performed on the selected QM potential-energy
 surface.
 
 The repository includes the two workflows evaluated in the accompanying
-study, the raw 960-reaction benchmark input archive, release metadata for the
+study, the raw 960-reaction benchmark input archive, the prepared GSM (871)
+and React-OT (960) TS-guess collections, release metadata for the
 EquiformerV2 checkpoint used in production, and pinned upstream ReactBench and
 HORM source trees. Processed analysis tables, figures, and Gaussian production
 outputs are not included.
@@ -38,7 +39,7 @@ scripts/                     command-line wrappers
 examples/                    Gaussian and Slurm templates
 docs/                        workflow, configuration, and provenance notes
 tests/                       tests that do not require Gaussian or HORM
-data/                        raw 960-reaction input archive and manifests
+data/                        raw reaction pairs, GSM and React-OT TS guesses
 models/                      EquiformerV2 release metadata and reconstruction
 third_party/                 pinned ReactBench and HORM Git submodules
 ```
@@ -152,9 +153,10 @@ the selected ML checkpoint.
 
 ## Data and provenance policy
 
-The repository distributes the raw 960-reaction input archive, while the
+The repository distributes the raw 960-reaction input archive and the prepared
+TS guesses in `data/gsm/` and `data/react_ot/`, while the
 single EquiformerV2 checkpoint used in the study is attached to the
-`eqv2-model-v1` GitHub release. It excludes processed datasets, derived result
+`eqv2-model-v1` GitHub release. It excludes derived result
 tables, Gaussian production trees, scheduler logs, credentials, and
 machine-specific paths. See
 [data/README.md](data/README.md), [models/README.md](models/README.md),

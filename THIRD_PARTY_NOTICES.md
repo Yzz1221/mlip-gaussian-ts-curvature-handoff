@@ -42,5 +42,8 @@ checkout are not included.
   DOI `10.1038/s41597-020-0460-4`; Schreiner et al., *Scientific Data* 2022,
   DOI `10.1038/s41597-022-01870-w`
 
-The repository does not include processed benchmark data, generated TS
-guesses, optimization results, or manuscript source data.
+Prepared GSM and React-OT TS guesses for these benchmark reactions are
+provided separately in `data/gsm/` and `data/react_ot/`. These generated
+structures are not the original Transition1x reference TSs. Their provenance
+and per-file checksums are recorded in the accompanying manifests.
+Optimization results and manuscript source data are not included.

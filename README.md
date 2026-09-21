@@ -36,7 +36,8 @@ while the MLIP supplies energies and derivatives throughout the calculation.
 ```text
 src/mlip_gaussian_handoff/   reusable Python implementation
 scripts/                     command-line wrappers
-examples/                    Gaussian and Slurm templates
+examples/gaussian/           four manuscript workflows (Opt+Freq and IRC)
+examples/slurm/              Slurm templates
 docs/                        workflow, configuration, and provenance notes
 tests/                       tests that do not require Gaussian or HORM
 data/                        raw reaction pairs, GSM and React-OT TS guesses
@@ -51,7 +52,7 @@ The two study workflows map to the following code paths:
   `mlip-gaussian-prepare` command;
 - **External--CalcAll:** `src/mlip_gaussian_handoff/external.py`,
   `scripts/horm_external.sh`, and
-  `examples/gaussian/external_calcall.gjf`.
+  `examples/gaussian/external_calcall/opt_freq.gjf`.
 
 Clone the repository with its pinned upstream frameworks:
 
@@ -100,10 +101,10 @@ Prepare the checkpoint containing the ML Hessian:
 
 ```bash
 mlip-gaussian-prepare \
-  --input examples/gaussian/ts_guess.gjf \
+  --input examples/gaussian/mlip_oneshot_readfc/initial_sp.gjf \
   --output work/rxn_example \
   --method 'wB97X/6-31G(d)' \
-  --nproc 24 \
+  --nproc 4 \
   --run-sp
 ```
 
@@ -135,10 +136,14 @@ checklist.
 ## Continuous-MLIP control
 
 The `mlip-gaussian-external` command implements the Gaussian `.EIn`/`.EOu`
-protocol. A route example is provided in
-[`examples/gaussian/external_calcfc.gjf`](examples/gaussian/external_calcfc.gjf).
+protocol. The manuscript's CalcAll route and its IRC input are in
+[`examples/gaussian/external_calcall/`](examples/gaussian/external_calcall/).
 External-control timings must be reported with their hardware and interface
 configuration; they are not automatically comparable with CPU QM wall times.
+
+The [Gaussian example guide](examples/gaussian/README.md) maps all four
+manuscript workflows to their Opt+Freq and IRC templates. All examples use
+the same React-OT `rxn9` starting geometry and four Gaussian CPU cores.
 
 ## Validation
 

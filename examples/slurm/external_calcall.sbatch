@@ -15,10 +15,13 @@ export HORM_DEVICE="${HORM_DEVICE:-cuda}"
 export MLIP_GAUSSIAN_PYTHON="${MLIP_GAUSSIAN_PYTHON:-python}"
 
 input="${1:?Usage: sbatch external_calcall.sbatch INPUT_GJF}"
-workdir="$(dirname "$input")"
+workdir="$(cd "$(dirname "$input")" && pwd)"
 basename="$(basename "$input" .gjf)"
+repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 
-cp scripts/horm_external.sh "$workdir/horm_external.sh"
+cp "$repo_dir/scripts/horm_external.sh" "$workdir/horm_external.sh"
 chmod +x "$workdir/horm_external.sh"
 
-g16 < "$input" > "$workdir/$basename.log"
+cd "$workdir"
+export PYTHONPATH="$repo_dir/src${PYTHONPATH:+:$PYTHONPATH}"
+g16 < "$basename.gjf" > "$basename.log"

@@ -1,0 +1,5 @@
+%oldchk=readfc.chk
+%chk=irc.chk
+%nprocshared=4
+#P wB97X/6-31G(d) IRC=(MaxPoints=30,RCFC,LQA,StepSize=15) Geom=AllCheck Guess=Read
+

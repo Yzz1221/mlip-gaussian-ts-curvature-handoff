@@ -23,18 +23,22 @@ they are excluded from the reported TS-search wall time.
 For CalcFC and CalcAll, place `opt_freq.gjf` and `irc.gjf` in the same working
 directory. Run Opt+Freq first, then IRC; `%oldchk=ts_freq.chk` imports the
 optimized TS and frequency force constants. The `ReadFC` example starts from
-`readfc.chk`, which must contain the injected ML Hessian. Its Opt+Freq run
+`mlip_readfc.chk`, which must contain the injected ML Hessian. Its Opt+Freq run
 updates that checkpoint; the IRC input then reads this *final* checkpoint,
 not the initial SP checkpoint. Run
 `mlip-gaussian-prepare --input examples/gaussian/mlip_oneshot_readfc/initial_sp.gjf --output WORK --nproc 4 --run-sp`
-to perform the SP, Hessian inference, checkpoint injection, and
-creation of the actual Opt+Freq input in `WORK/ts_freq.gjf`.
+to exercise the later generic interface. To reproduce the paper's four-core
+calculation code and timing, use the sources documented in
+[`production/README.md`](../../production/README.md).
 
-For External--CalcAll, put an executable copy of `scripts/horm_external.sh`
-in the same working directory as each Gaussian input. Keep `External` on
+For External--CalcAll, put copies of both `production/external/horm.sh`
+and `production/external/horm_external.py` in the same working directory as
+each Gaussian input, and make `horm.sh` executable. Keep `External` on
 both the Opt+Freq and IRC routes so energy, gradient, and requested Hessian
 evaluations remain on the EquiformerV2 PES. Set `HORM_ROOT`,
-`HORM_CHECKPOINT`, `HORM_DEVICE`, and `MLIP_GAUSSIAN_PYTHON` before running.
+`HORM_CHECKPOINT`, `HORM_DEVICE=cuda`, and `HORM_PYTHON_BIN` before running.
+The study's External timing used a resident model process
+(`HORM_USE_DAEMON=1`) and an A100 GPU.
 
 The bundled `rxn9` coordinates illustrate the route and file handoff. They
 do not assert that this reaction met the paper's success criteria in every

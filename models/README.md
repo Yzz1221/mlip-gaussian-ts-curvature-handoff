@@ -28,3 +28,6 @@ sha256sum -c eqv2.ckpt.sha256
 
 The checkpoint is distributed under the upstream HORM terms. Cite the HORM
 dataset/model paper using the entry in `../CITATIONS.bib`.
+The exact local EquiformerV2 network source used to construct this checkpoint
+during inference is in `../model_architecture/`; apply it to the pinned HORM
+submodule before reproducing the calculations.

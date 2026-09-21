@@ -7,12 +7,11 @@ all subsequent energies, gradients, TS optimization, frequency analysis, and
 IRC calculations can then be performed on the selected QM potential-energy
 surface.
 
-The repository includes the two workflows evaluated in the accompanying
+The repository includes the production code for the two MLIP workflows in the
 study, the raw 960-reaction benchmark input archive, the prepared GSM (871)
-and React-OT (960) TS-guess collections, release metadata for the
-EquiformerV2 checkpoint used in production, and pinned upstream ReactBench and
-HORM source trees. Processed analysis tables, figures, and Gaussian production
-outputs are not included.
+and React-OT (960) TS guesses, the locally used EquiformerV2 network file,
+release metadata for the checkpoint, and pinned upstream ReactBench and HORM
+source trees.
 
 ## Workflow
 
@@ -34,10 +33,12 @@ while the MLIP supplies energies and derivatives throughout the calculation.
 ## Repository layout
 
 ```text
-src/mlip_gaussian_handoff/   reusable Python implementation
-scripts/                     command-line wrappers
+production/oneshot/          actual four-core OneShot implementation
+production/external/         actual External--CalcAll adapter and wrapper
+model_architecture/          locally used EquiformerV2 network file
+src/mlip_gaussian_handoff/   later reusable interface, not the benchmark runner
+scripts/                     later interface wrapper
 examples/gaussian/           four manuscript workflows (Opt+Freq and IRC)
-examples/slurm/              Slurm templates
 docs/                        workflow, configuration, and provenance notes
 tests/                       tests that do not require Gaussian or HORM
 data/                        raw reaction pairs, GSM and React-OT TS guesses
@@ -45,14 +46,22 @@ models/                      EquiformerV2 release metadata and reconstruction
 third_party/                 pinned ReactBench and HORM Git submodules
 ```
 
-The two study workflows map to the following code paths:
+The study calculations used these code paths:
 
-- **MLIP--OneShot--ReadFC:**
-  `src/mlip_gaussian_handoff/workflow.py` and the
-  `mlip-gaussian-prepare` command;
-- **External--CalcAll:** `src/mlip_gaussian_handoff/external.py`,
-  `scripts/horm_external.sh`, and
-  `examples/gaussian/external_calcall/opt_freq.gjf`.
+- **MLIP--OneShot--ReadFC:** `production/oneshot/predict_hessians.py` loads
+  the model once per shard; `production/oneshot/run_local_phase.py` aligns
+  each Hessian to the Gaussian checkpoint frame, injects it through
+  `formchk`/`unfchk`, and runs QM `ReadFC` optimization. The exact helper
+  source files are in `production/oneshot/horm_bridge/`.
+- **External--CalcAll:** `production/external/horm_external.py` and
+  `production/external/horm.sh` provide EquiformerV2 energy, gradients, and
+  requested Hessians to Gaussian, with support for a resident model process.
+
+These production files preserve the cluster paths used in the original
+calculations; adapt those paths to a new system before running. See
+[production/README.md](production/README.md) for file provenance and the
+exact source hashes. The separate `src/` package is a later generic interface
+and was not the implementation used to obtain the paper's timing results.
 
 Clone the repository with its pinned upstream frameworks:
 
@@ -95,9 +104,12 @@ export HORM_DEVICE=cpu          # or cuda
 Install the additional HORM dependencies according to the upstream HORM
 environment. The exact PyTorch/PyG build must match the local CUDA runtime.
 
-## One-shot handoff
+## Later generic OneShot interface
 
-Prepare the checkpoint containing the ML Hessian:
+The `mlip-gaussian-prepare` command below demonstrates a separate reusable
+interface. The manuscript calculations used `production/oneshot/`, described
+above. To try the generic interface, prepare a checkpoint containing the ML
+Hessian:
 
 ```bash
 mlip-gaussian-prepare \
@@ -133,11 +145,13 @@ See [docs/workflow.md](docs/workflow.md) for the scientific and file-level
 contract and [docs/reproducibility.md](docs/reproducibility.md) for a release
 checklist.
 
-## Continuous-MLIP control
+## Later generic External interface
 
-The `mlip-gaussian-external` command implements the Gaussian `.EIn`/`.EOu`
+The `mlip-gaussian-external` command implements a separate Gaussian `.EIn`/`.EOu`
 protocol. The manuscript's CalcAll route and its IRC input are in
 [`examples/gaussian/external_calcall/`](examples/gaussian/external_calcall/).
+The production External adapter with resident model support is in
+`production/external/`.
 External-control timings must be reported with their hardware and interface
 configuration; they are not automatically comparable with CPU QM wall times.
 

@@ -1,6 +1,6 @@
 %chk=ts_freq.chk
 %nprocshared=4
-#P Opt=(TS,CalcAll,NoEigenTest,NoMicro,MaxCycles=150) Freq External='./horm_external.sh'
+#P Opt=(TS,CalcAll,NoEigenTest,NoMicro,MaxCycles=150) Freq External='./horm.sh'
 
 React-OT rxn9: External CalcAll TS Opt+Freq on the EquiformerV2 PES
 

@@ -1,4 +1,4 @@
-%chk=initial.chk
+%chk=mlip_readfc_initial.chk
 %nprocshared=4
 #P wB97X/6-31G(d) SP
 

@@ -1,4 +1,3 @@
-%chk=readfc.chk
+%chk=mlip_readfc.chk
 %nprocshared=4
 #P wB97X/6-31G(d) Opt=(TS,ReadFC,NoEigenTest,NoMicro,MaxCycles=150) Freq Geom=AllCheck Guess=TCheck
-

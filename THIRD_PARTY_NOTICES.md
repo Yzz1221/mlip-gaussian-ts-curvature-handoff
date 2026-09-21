@@ -25,6 +25,9 @@ checkout are not included.
 - upstream: <https://github.com/deepprinciple/HORM>
 - pinned commit: `b4c2a35a28985c72ca47261bad0a96b2bc2ba084`
 - source location: `third_party/HORM`
+- local EquiformerV2 source copy: `model_architecture/nets/equiformer_v2/equiformer_v2_oc20.py`
+- modifications to the copied upstream file: CPU-safe device selection and
+  removal of an unused internal Hessian call; see `model_architecture/README.md`
 - checkpoint location: GitHub release `eqv2-model-v1`; provenance and
   reconstruction instructions are in `models/README.md`
 - license: CC BY-NC-SA 4.0, retained in the submodule and reproduced in

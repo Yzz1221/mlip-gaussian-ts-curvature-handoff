@@ -8,7 +8,9 @@ the original experiment and manuscript directories unchanged.
 - checkpoint-oriented one-shot Hessian handoff;
 - Gaussian External EIn/EOu adapter for controls;
 - Link1-aware Opt+Freq classifier;
-- minimal Gaussian and Slurm templates;
+- Gaussian input templates for the four workflows;
+- archived production OneShot and External implementation sources;
+- the locally modified EquiformerV2 network file;
 - unit tests and reproducibility documentation;
 - the raw 960-reaction benchmark input archive;
 - the prepared GSM (871) and React-OT (960) initial TS guesses;
@@ -22,7 +24,7 @@ the original experiment and manuscript directories unchanged.
 - Gaussian executables or licensed files;
 - production gjf/chk/fchk/log/IRC trees;
 - manuscript, SI, figures, figure source data, or unpublished tables;
-- machine-specific absolute paths, scheduler accounting, or credentials.
+- scheduler accounting or credentials.
 
 The upstream code and data licenses apply independently. Exact upstream
 commits, citations, licenses, and cryptographic checksums are recorded in

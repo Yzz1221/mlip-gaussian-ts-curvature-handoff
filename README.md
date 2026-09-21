@@ -1,174 +1,104 @@
-# MLIP–Gaussian TS curvature handoff
+# MLIP–Gaussian transition-state workflows
 
-Code for a one-shot transition-state workflow in which a Hessian-supervised
-MLIP supplies the Cartesian curvature only at the initial TS-guess geometry.
-The curvature is written to a Gaussian checkpoint and imported with `ReadFC`;
-all subsequent energies, gradients, TS optimization, frequency analysis, and
-IRC calculations can then be performed on the selected QM potential-energy
-surface.
+This repository runs the four workflows in the manuscript: Gaussian--CalcFC,
+Gaussian--CalcAll, MLIP--OneShot--ReadFC, and External--CalcAll. The OneShot
+workflow transfers one EquiformerV2 Hessian into Gaussian and then optimizes
+on the QM potential-energy surface. External--CalcAll asks EquiformerV2 for
+energy, gradients, and Hessians throughout Gaussian optimization.
 
-The repository includes the production code for the two MLIP workflows in the
-study, the raw 960-reaction benchmark input archive, the prepared GSM (871)
-and React-OT (960) TS guesses, the locally used EquiformerV2 network file,
-release metadata for the checkpoint, and pinned upstream ReactBench and HORM
-source trees.
+## Install
 
-## Workflow
-
-```text
-TS guess (.gjf)
-    │
-    ├─ Gaussian fixed-geometry QM SP → initial .chk/.fchk
-    ├─ HORM/EquiformerV2 Hessian at the checkpoint geometry
-    ├─ symmetrize + convert eV Å⁻² → Eh a0⁻²
-    ├─ inject Cartesian Force Constants → modified checkpoint
-    ├─ Gaussian Opt=(TS,ReadFC) + Freq on the target QM PES
-    └─ bidirectional Gaussian IRC + optional endpoint classification
-```
-
-The repository also includes a Gaussian `External` adapter used for continuous
-MLIP controls. In those controls Gaussian retains the Berny/Freq/IRC drivers,
-while the MLIP supplies energies and derivatives throughout the calculation.
-
-## Repository layout
-
-```text
-production/oneshot/          actual four-core OneShot implementation
-production/external/         actual External--CalcAll adapter and wrapper
-model_architecture/          locally used EquiformerV2 network file
-src/mlip_gaussian_handoff/   later reusable interface, not the benchmark runner
-scripts/                     later interface wrapper
-examples/gaussian/           four manuscript workflows (Opt+Freq and IRC)
-docs/                        workflow, configuration, and provenance notes
-tests/                       tests that do not require Gaussian or HORM
-data/                        raw reaction pairs, GSM and React-OT TS guesses
-models/                      EquiformerV2 release metadata and reconstruction
-third_party/                 pinned ReactBench and HORM Git submodules
-```
-
-The study calculations used these code paths:
-
-- **MLIP--OneShot--ReadFC:** `production/oneshot/predict_hessians.py` loads
-  the model once per shard; `production/oneshot/run_local_phase.py` aligns
-  each Hessian to the Gaussian checkpoint frame, injects it through
-  `formchk`/`unfchk`, and runs QM `ReadFC` optimization. The exact helper
-  source files are in `production/oneshot/horm_bridge/`.
-- **External--CalcAll:** `production/external/horm_external.py` and
-  `production/external/horm.sh` provide EquiformerV2 energy, gradients, and
-  requested Hessians to Gaussian, with support for a resident model process.
-
-These production files preserve the cluster paths used in the original
-calculations; adapt those paths to a new system before running. See
-[production/README.md](production/README.md) for file provenance and the
-exact source hashes. The separate `src/` package is a later generic interface
-and was not the implementation used to obtain the paper's timing results.
-
-Clone the repository with its pinned upstream frameworks:
+Clone with the pinned [HORM](https://github.com/deepprinciple/HORM) and
+[ReactBench](https://github.com/deepprinciple/ReactBench) source repositories:
 
 ```bash
-git clone --recurse-submodules \
-  https://github.com/Yzz1221/mlip-gaussian-ts-curvature-handoff.git
+git clone --recurse-submodules https://github.com/Yzz1221/mlip-gaussian-ts-curvature-handoff.git
 cd mlip-gaussian-ts-curvature-handoff
 ```
 
-Download the EquiformerV2 checkpoint assets from the
-[`eqv2-model-v1` release](https://github.com/Yzz1221/mlip-gaussian-ts-curvature-handoff/releases/tag/eqv2-model-v1)
-and reconstruct the checkpoint as described in
-[`models/README.md`](models/README.md).
-
-## External requirements
-
-- Python 3.10+
-- NumPy
-- PyTorch and PyTorch Geometric versions compatible with the HORM checkout
-- the pinned [HORM](third_party/HORM) checkout and the released EquiformerV2
-  checkpoint
-- Gaussian 16 plus `formchk` and `unfchk`
-- optional: [ReactBench](third_party/ReactBench) for endpoint
-  connectivity classification
-
-Gaussian is proprietary software and is not distributed by this repository.
-
-## Installation
+Use Python 3.10 or newer and install PyTorch/PyTorch Geometric builds that
+match your CPU or CUDA environment, following the pinned HORM dependencies.
+Gaussian 16, `formchk`, and `unfchk` must be available on `PATH`.
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 pip install -e .
-
-export HORM_ROOT="$PWD/third_party/HORM"
-export HORM_CHECKPOINT="$PWD/models/eqv2.ckpt"
-export HORM_DEVICE=cpu          # or cuda
+pip install -e third_party/HORM
+python examples/setup.py
 ```
 
-Install the additional HORM dependencies according to the upstream HORM
-environment. The exact PyTorch/PyG build must match the local CUDA runtime.
+`examples/setup.py` installs the locally used EquiformerV2 network source into
+the HORM checkout, downloads the exact `eqv2.ckpt` model from the
+[`eqv2-model-v1` release](https://github.com/Yzz1221/mlip-gaussian-ts-curvature-handoff/releases/tag/eqv2-model-v1),
+and verifies its SHA256. If you already have this checkpoint, run
+`python examples/setup.py --model-source /path/to/eqv2.ckpt`.
 
-## Later generic OneShot interface
+## Run a workflow
 
-The `mlip-gaussian-prepare` command below demonstrates a separate reusable
-interface. The manuscript calculations used `production/oneshot/`, described
-above. To try the generic interface, prepare a checkpoint containing the ML
-Hessian:
+Choose an initial TS guess from `data/react_ot/` or `data/gsm/`, then give its
+charge and spin multiplicity explicitly. For example:
 
 ```bash
-mlip-gaussian-prepare \
-  --input examples/gaussian/mlip_oneshot_readfc/initial_sp.gjf \
-  --output work/rxn_example \
-  --method 'wB97X/6-31G(d)' \
-  --nproc 4 \
-  --run-sp
+python examples/run.py --workflow oneshot \
+  --xyz data/react_ot/rxn9.xyz --charge 0 --multiplicity 1 \
+  --output runs/oneshot_rxn9
 ```
 
-This creates `initial.gjf/.chk/.fchk`, `readfc.fchk/.chk`, a QM
-`ts_freq.gjf`, and `handoff_metadata.json` with units, hashes, and timings.
-
-Run the prepared QM refinement and audit it:
+The other choices use the same command and input arguments:
 
 ```bash
-mlip-gaussian-run work/rxn_example/ts_freq.gjf
-mlip-gaussian-audit work/rxn_example/ts_freq.log
+python examples/run.py --workflow calcfc --xyz data/react_ot/rxn9.xyz --charge 0 --multiplicity 1 --output runs/calcfc_rxn9
+python examples/run.py --workflow calcall --xyz data/react_ot/rxn9.xyz --charge 0 --multiplicity 1 --output runs/calcall_rxn9
+python examples/run.py --workflow external_calcall --xyz data/react_ot/rxn9.xyz --charge 0 --multiplicity 1 --output runs/external_rxn9
 ```
 
-After an accepted Opt+Freq calculation, generate and run IRC:
+Replace the `--xyz` path with your own initial TS guess. Each invocation
+creates an independent output directory, generates the corresponding Gaussian
+inputs, runs Opt+Freq, and runs IRC when Opt+Freq meets the paper's primary
+criterion. Use `--dry-run` to inspect inputs without calculations, `--skip-irc`
+to stop after Opt+Freq, or `--cores N` to change the Gaussian core count. The
+paper used four CPU cores for Gaussian and an A100 GPU for External--CalcAll;
+`--external-device cpu` is available for a CPU-only trial. Gaussian and the
+model have substantial runtime requirements, so use your own job scheduler to
+invoke `examples/run.py` on a compute node.
+
+The four Gaussian Opt+Freq and IRC routes are also shown separately in
+[`examples/gaussian/`](examples/gaussian/). No cluster submission scripts are
+required.
+
+## Code and model provenance
+
+The numerical implementation used for the manuscript is in
+[`production/oneshot/`](production/oneshot/) and
+[`production/external/`](production/external/). `examples/run.py` connects
+those implementations to input XYZ files and avoids the original cluster's
+absolute paths. The OneShot path retains the production model prediction,
+Cartesian alignment/rotation, and Hessian injection; External--CalcAll uses
+the production Gaussian External adapter with one resident model process.
+The source copies and their hashes are documented in
+[`production/README.md`](production/README.md).
+
+The full HORM model code is pinned under `third_party/HORM`; the two local
+EquiformerV2 changes are preserved in [`model_architecture/`](model_architecture/).
+The model checkpoint is available from the release linked above. HORM and
+ReactBench authors, paper citations, and licenses are recorded in
+[`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) and
+[`CITATIONS.bib`](CITATIONS.bib). Gaussian is proprietary and must be installed
+separately.
+
+## Validate the installation
 
 ```bash
-mlip-gaussian-write-irc \
-  --checkpoint work/rxn_example/readfc.chk \
-  --output work/rxn_example/irc.gjf \
-  --method 'wB97X/6-31G(d)'
-
-mlip-gaussian-run work/rxn_example/irc.gjf
+python examples/run.py --workflow oneshot --xyz data/react_ot/rxn9.xyz \
+  --charge 0 --multiplicity 1 --output runs/check_inputs --dry-run
+python -m unittest discover -s tests
 ```
 
-See [docs/workflow.md](docs/workflow.md) for the scientific and file-level
-contract and [docs/reproducibility.md](docs/reproducibility.md) for a release
-checklist.
-
-## Later generic External interface
-
-The `mlip-gaussian-external` command implements a separate Gaussian `.EIn`/`.EOu`
-protocol. The manuscript's CalcAll route and its IRC input are in
-[`examples/gaussian/external_calcall/`](examples/gaussian/external_calcall/).
-The production External adapter with resident model support is in
-`production/external/`.
-External-control timings must be reported with their hardware and interface
-configuration; they are not automatically comparable with CPU QM wall times.
-
-The [Gaussian example guide](examples/gaussian/README.md) maps all four
-manuscript workflows to their Opt+Freq and IRC templates. All examples use
-the same React-OT `rxn9` starting geometry and four Gaussian CPU cores.
-
-## Validation
-
-```bash
-python -m pytest
-```
-
-The tests cover Gaussian input parsing, fchk force-constant injection, unit
-conversion, Hessian symmetrization, and Opt+Freq classification. They do not
-replace a small end-to-end test using the licensed Gaussian installation and
-the selected ML checkpoint.
+This dry run checks the chosen XYZ and writes the Gaussian input files. A
+full OneShot or External calculation additionally needs Gaussian 16 and the
+released model. The IRC output still requires endpoint connectivity analysis
+to determine whether the intended reaction was recovered.
 
 ## Data
 
@@ -191,18 +121,5 @@ distribution (SHA256:
 `bf39f131988328a9368f410dd6e98045925f7cad62df70a13fdd3cfa131c88a3`).
 Extract it with `tar -xzf data/transition1x_960.tar.gz -C data`.
 
-The EquiformerV2 checkpoint used in the study is available from the
-[`eqv2-model-v1` release](https://github.com/Yzz1221/mlip-gaussian-ts-curvature-handoff/releases/tag/eqv2-model-v1).
-See [models/README.md](models/README.md) for reconstruction instructions.
-Source code, licensing and citations for the third-party components are
-documented in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and
-[CITATIONS.bib](CITATIONS.bib).
-
-ReactBench, HORM, and Transition1x should be cited when their code, model, or
-data are used.
-
-## Status
-
-The upstream commits, model checksum, dataset checksum, and production
-workflow entry points are frozen in this repository. Before assigning a DOI,
-archive the GitHub release and record its commit identifier in the manuscript.
+Please cite ReactBench, HORM, and Transition1x when using their code, model,
+or data; the ready-to-use entries are in [CITATIONS.bib](CITATIONS.bib).

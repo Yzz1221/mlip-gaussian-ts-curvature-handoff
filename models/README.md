@@ -7,8 +7,10 @@ study. The exact file is distributed through the GitHub release
 It is split into numbered parts to make uploads reliable through restricted
 network proxies.
 
-Download every `eqv2.ckpt.NN.part` asset and `eqv2.ckpt.sha256` into one
-directory, then reconstruct and verify the checkpoint:
+From the repository root, run `python examples/setup.py` to download,
+reconstruct, and verify the checkpoint automatically. To do the same steps
+manually, download every `eqv2.ckpt.NN.part` asset and
+`eqv2.ckpt.sha256` into one directory, then run:
 
 ```bash
 cat eqv2.ckpt.[0-9][0-9].part > eqv2.ckpt
@@ -29,5 +31,5 @@ sha256sum -c eqv2.ckpt.sha256
 The checkpoint is distributed under the upstream HORM terms. Cite the HORM
 dataset/model paper using the entry in `../CITATIONS.bib`.
 The exact local EquiformerV2 network source used to construct this checkpoint
-during inference is in `../model_architecture/`; apply it to the pinned HORM
-submodule before reproducing the calculations.
+during inference is in `../model_architecture/`. `examples/setup.py` also
+installs that file into the pinned HORM submodule.

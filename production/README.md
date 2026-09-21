@@ -35,6 +35,13 @@ paths, and construct equivalent input directories from `data/`. The separate
 stage without imposing a particular cluster scheduler. Slurm submission
 files are intentionally omitted.
 
+For a new reaction, use `python examples/run.py` from the repository root.
+It calls the archived production model inference and External implementations
+and supplies portable input and output paths. Running OneShot on one reaction
+loads the model for that reaction; reproducing the manuscript's amortized
+model-loading timings requires batching reactions with the original
+`predict_hessians.py` campaign runner.
+
 Model construction requires HORM. The complete upstream architecture and
 dependencies are pinned by `third_party/HORM`; the locally modified
 EquiformerV2 network file used in the calculations is supplied separately

@@ -116,7 +116,7 @@ data/Gaussian_ReactOT_exact/<method>/rxn<ID>/IRC/irc.gjf
 `data/Gaussian_GSM_eqV2/` contains 871 reaction directories per method;
 `data/Gaussian_ReactOT_exact/` contains 960. Each dataset includes
 `Gaussian_calcfc`, `Gaussian_calcall`,
-`mlip_oneshot_SP_Readfc`, and `C_eqv2_EFH_gaussian_calcall` (External--CalcAll).
+`MLIP_OneShot_ReadFC`, and `External_calcall`.
 Each reaction and method has exactly these two `.gjf` files. The OneShot
 Opt+Freq input reads its checkpoint; its initial SP input and ML Hessian
 handoff are created by the running code from the matching CalcFC starting

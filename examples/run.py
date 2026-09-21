@@ -45,8 +45,8 @@ DATASETS = {"gsm": "Gaussian_GSM_eqV2", "react_ot": "Gaussian_ReactOT_exact"}
 DATA_METHODS = {
     "calcfc": "Gaussian_calcfc",
     "calcall": "Gaussian_calcall",
-    "oneshot": "mlip_oneshot_SP_Readfc",
-    "external_calcall": "C_eqv2_EFH_gaussian_calcall",
+    "oneshot": "MLIP_OneShot_ReadFC",
+    "external_calcall": "External_calcall",
 }
 
 

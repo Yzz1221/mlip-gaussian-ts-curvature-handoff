@@ -12,6 +12,7 @@ build/
 
 # ML checkpoints and arrays
 *.ckpt
+*.ckpt.partial
 *.pt
 *.pth
 *.npy

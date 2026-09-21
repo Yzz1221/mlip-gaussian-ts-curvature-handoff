@@ -28,10 +28,9 @@ pip install -e horm
 python examples/setup.py
 ```
 
-`examples/setup.py` verifies the locally used EquiformerV2 network already
-included in `horm/`, downloads the exact `eqv2.ckpt` model from the
-[`eqv2-model-v1` release](https://github.com/Yzz1221/mlip-gaussian-ts-curvature-handoff/releases/tag/eqv2-model-v1),
-and verifies its SHA256. If you already have this checkpoint, run
+`examples/setup.py` verifies the locally used EquiformerV2 network included
+in `horm/`, assembles the bundled checkpoint parts into `ckpt/eqv2.ckpt`,
+and verifies its SHA256. If you already have the checkpoint, run
 `python examples/setup.py --model-source /path/to/eqv2.ckpt`.
 
 ## Run a workflow
@@ -92,7 +91,7 @@ The source copies and their hashes are documented in
 
 The local HORM code is included in [`horm/`](horm/) with its upstream license.
 The EquiformerV2 network file there already contains the two local changes.
-The model checkpoint is available from the release linked above. HORM and
+The model checkpoint parts are included in [`ckpt/`](ckpt/). HORM and
 ReactBench authors, paper citations, and licenses are recorded in
 [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) and
 [`CITATIONS.bib`](CITATIONS.bib). Gaussian is proprietary and must be installed
@@ -108,7 +107,7 @@ python -m unittest discover -s tests
 
 This dry run checks the chosen XYZ and writes the Gaussian input files. A
 full OneShot or External calculation additionally needs Gaussian 16 and the
-released model. The IRC output still requires endpoint connectivity analysis
+assembled model. The IRC output still requires endpoint connectivity analysis
 to determine whether the intended reaction was recovered.
 
 ## Data

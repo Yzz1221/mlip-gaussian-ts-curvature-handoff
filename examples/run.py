@@ -32,7 +32,7 @@ from mlip_gaussian_handoff.units import BOHR_TO_ANGSTROM  # noqa: E402
 
 SAMPLE_DATA = ROOT / "examples" / "Gaussian_ReactOT_exact"
 HORM = ROOT / "horm"
-MODEL = ROOT / "models" / "eqv2.ckpt"
+MODEL = ROOT / "ckpt" / "eqv2.ckpt"
 EXPECTED_MODEL_SHA256 = "6b5adb66776041a45ab85e5e496c3b1e37f2b102be31247384a8ee69ee56016a"
 EXPECTED_NETWORK_SHA256 = "62c7e11c4dfa15a74be816462049178c100c09ac77f90a9a9046c5de59f73a70"
 DATASETS = {"gsm": "Gaussian_GSM_eqV2", "react_ot": "Gaussian_ReactOT_exact"}

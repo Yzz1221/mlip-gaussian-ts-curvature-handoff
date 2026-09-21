@@ -29,8 +29,8 @@ checkout are not included.
 - locally used EquiformerV2 source: `horm/nets/equiformer_v2/equiformer_v2_oc20.py`
 - modifications to the copied upstream file: CPU-safe device selection and
   removal of an unused internal Hessian call
-- checkpoint location: GitHub release `eqv2-model-v1`; provenance and
-  reconstruction instructions are in `models/README.md`
+- checkpoint location: `ckpt/eqv2.ckpt.*.part`; the repository setup command
+  reconstructs `ckpt/eqv2.ckpt`. Provenance is in `ckpt/README.md`
 - license: CC BY-NC-SA 4.0, retained in `horm/LICENSE` and reproduced in
   `THIRD_PARTY_CC-BY-NC-SA-4.0.txt`
 - citation: Cui et al., *Scientific Data* 2026,

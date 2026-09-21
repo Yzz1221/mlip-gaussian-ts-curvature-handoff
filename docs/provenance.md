@@ -11,7 +11,7 @@ the original experiment and manuscript directories unchanged.
 - minimal Gaussian and Slurm templates;
 - unit tests and reproducibility documentation;
 - the raw 960-reaction benchmark input archive;
-- the prepared GSM (871) and React-OT (960) initial TS guesses, with manifests;
+- the prepared GSM (871) and React-OT (960) initial TS guesses;
 - release metadata and reconstruction instructions for the production
   EquiformerV2 checkpoint;
 - pinned ReactBench and HORM source trees as Git submodules.
@@ -26,4 +26,4 @@ the original experiment and manuscript directories unchanged.
 
 The upstream code and data licenses apply independently. Exact upstream
 commits, citations, licenses, and cryptographic checksums are recorded in
-`THIRD_PARTY_NOTICES.md`, `data/README.md`, and `models/README.md`.
+`THIRD_PARTY_NOTICES.md`, the main `README.md`, and `models/README.md`.

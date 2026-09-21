@@ -44,6 +44,6 @@ checkout are not included.
 
 Prepared GSM and React-OT TS guesses for these benchmark reactions are
 provided separately in `data/gsm/` and `data/react_ot/`. These generated
-structures are not the original Transition1x reference TSs. Their provenance
-and per-file checksums are recorded in the accompanying manifests.
+structures are not the original Transition1x reference TSs. Their counts and
+provenance are described in the main `README.md`.
 Optimization results and manuscript source data are not included.

@@ -20,7 +20,8 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
-from mlip_gaussian_handoff.audit import classify_opt_freq  # noqa: E402
+sys.path.insert(0, str(ROOT))
+from analysis.audit_ts_freq_logs import classify as classify_opt_freq  # noqa: E402
 from mlip_gaussian_handoff.gaussian_io import (  # noqa: E402
     PERIODIC_SYMBOLS,
     SYMBOL_TO_Z,

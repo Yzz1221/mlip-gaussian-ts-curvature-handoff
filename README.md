@@ -77,6 +77,31 @@ python examples/run.py --example --workflow oneshot \
 
 No cluster submission scripts are required.
 
+## Check Opt+Freq and IRC recovery
+
+The manuscript's primary Opt+Freq criterion is implemented in
+[`analysis/audit_ts_freq_logs.py`](analysis/audit_ts_freq_logs.py). Its
+`paper_ok_minus_10` field requires normal Opt and final Freq completion,
+four geometry-convergence `YES` values, a stationary point, and exactly one
+frequency below -10 cm^-1 in the final complete frequency block.
+[`analysis/classify_gaussian_irc_intended.py`](analysis/classify_gaussian_irc_intended.py)
+uses the pinned ReactBench adjacency algorithm to compare both IRC endpoints
+with the original two-frame Transition1x reactant/product reference.
+
+Save individual runs under `runs/<workflow>/rxn<ID>/`. To summarize a full
+dataset with a fixed denominator (871 GSM or 960 React-OT), use:
+
+```bash
+python analysis/validate.py --dataset react_ot --workflow oneshot \
+  --runs runs/oneshot --output runs/oneshot_validation.json
+```
+
+Missing and failed jobs remain in the denominator; the case-level JSON keeps
+Opt+Freq outcome and IRC endpoint identity separate. For one reaction, append
+`--reaction rxn9`. The repository includes the trimmed
+[`mlip-gaussian-ts-validation` skill](skills/mlip-gaussian-ts-validation/SKILL.md)
+for this paper-primary -10 cm^-1 rule and IRC Intended classification.
+
 ## Code and model provenance
 
 The numerical implementation used for the manuscript is in

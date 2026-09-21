@@ -29,9 +29,10 @@ from mlip_gaussian_handoff.gaussian_io import (  # noqa: E402
 from mlip_gaussian_handoff.units import BOHR_TO_ANGSTROM  # noqa: E402
 
 TEMPLATES = ROOT / "examples" / "gaussian"
-HORM = ROOT / "third_party" / "HORM"
+HORM = ROOT / "horm"
 MODEL = ROOT / "models" / "eqv2.ckpt"
 EXPECTED_MODEL_SHA256 = "6b5adb66776041a45ab85e5e496c3b1e37f2b102be31247384a8ee69ee56016a"
+EXPECTED_NETWORK_SHA256 = "62c7e11c4dfa15a74be816462049178c100c09ac77f90a9a9046c5de59f73a70"
 WORKFLOWS = {
     "calcfc": "gaussian_calcfc",
     "calcall": "gaussian_calcall",
@@ -221,11 +222,10 @@ def start_external_daemon(directory: Path, env: dict[str, str]) -> tuple[subproc
 
 
 def production_network_installed() -> bool:
-    local = ROOT / "model_architecture" / "nets" / "equiformer_v2" / "equiformer_v2_oc20.py"
     installed = HORM / "nets" / "equiformer_v2" / "equiformer_v2_oc20.py"
-    if not local.is_file() or not installed.is_file():
+    if not installed.is_file():
         return False
-    return hashlib.sha256(local.read_bytes()).digest() == hashlib.sha256(installed.read_bytes()).digest()
+    return hashlib.sha256(installed.read_bytes()).hexdigest() == EXPECTED_NETWORK_SHA256
 
 
 def main() -> None:

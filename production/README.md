@@ -42,10 +42,8 @@ loads the model for that reaction; reproducing the manuscript's amortized
 model-loading timings requires batching reactions with the original
 `predict_hessians.py` campaign runner.
 
-Model construction requires HORM. The complete upstream architecture and
-dependencies are pinned by `third_party/HORM`; the locally modified
-EquiformerV2 network file used in the calculations is supplied separately
-under `model_architecture/`. Copy it over the matching path in the HORM
-checkout before loading the released `eqv2.ckpt` checkpoint. HORM authors,
+Model construction requires HORM. The local architecture and its dependencies
+are included in `horm/`, with the EquiformerV2 network file used in the
+calculations already installed. HORM authors,
 paper, source URL, and CC BY-NC-SA 4.0 license are recorded in
 `THIRD_PARTY_NOTICES.md` and `CITATIONS.bib`.

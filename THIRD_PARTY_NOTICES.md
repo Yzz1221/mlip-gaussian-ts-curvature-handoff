@@ -24,16 +24,21 @@ checkout are not included.
 
 - upstream: <https://github.com/deepprinciple/HORM>
 - pinned commit: `b4c2a35a28985c72ca47261bad0a96b2bc2ba084`
-- source location: `third_party/HORM`
-- local EquiformerV2 source copy: `model_architecture/nets/equiformer_v2/equiformer_v2_oc20.py`
+- source location: `horm/` (local copy of the tracked upstream source,
+  excluding training datasets and checkpoints)
+- locally used EquiformerV2 source: `horm/nets/equiformer_v2/equiformer_v2_oc20.py`
 - modifications to the copied upstream file: CPU-safe device selection and
-  removal of an unused internal Hessian call; see `model_architecture/README.md`
+  removal of an unused internal Hessian call
 - checkpoint location: GitHub release `eqv2-model-v1`; provenance and
   reconstruction instructions are in `models/README.md`
-- license: CC BY-NC-SA 4.0, retained in the submodule and reproduced in
+- license: CC BY-NC-SA 4.0, retained in `horm/LICENSE` and reproduced in
   `THIRD_PARTY_CC-BY-NC-SA-4.0.txt`
 - citation: Cui et al., *Scientific Data* 2026,
   DOI `10.1038/s41597-025-06350-5`
+
+The upstream HORM README and LICENSE identify CC BY-NC-SA 4.0, while its
+`pyproject.toml` lists MIT metadata. This repository preserves the upstream
+files and attributes the source under the stated README/LICENSE terms.
 
 ## Transition1x benchmark inputs
 

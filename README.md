@@ -8,8 +8,8 @@ energy, gradients, and Hessians throughout Gaussian optimization.
 
 ## Install
 
-Clone with the pinned [HORM](https://github.com/deepprinciple/HORM) and
-[ReactBench](https://github.com/deepprinciple/ReactBench) source repositories:
+Clone the repository. The local HORM source used in the study is included in
+`horm/`. The ReactBench submodule provides its separate upstream framework:
 
 ```bash
 git clone --recurse-submodules https://github.com/Yzz1221/mlip-gaussian-ts-curvature-handoff.git
@@ -24,12 +24,12 @@ Gaussian 16, `formchk`, and `unfchk` must be available on `PATH`.
 python -m venv .venv
 source .venv/bin/activate
 pip install -e .
-pip install -e third_party/HORM
+pip install -e horm
 python examples/setup.py
 ```
 
-`examples/setup.py` installs the locally used EquiformerV2 network source into
-the HORM checkout, downloads the exact `eqv2.ckpt` model from the
+`examples/setup.py` verifies the locally used EquiformerV2 network already
+included in `horm/`, downloads the exact `eqv2.ckpt` model from the
 [`eqv2-model-v1` release](https://github.com/Yzz1221/mlip-gaussian-ts-curvature-handoff/releases/tag/eqv2-model-v1),
 and verifies its SHA256. If you already have this checkpoint, run
 `python examples/setup.py --model-source /path/to/eqv2.ckpt`.
@@ -79,8 +79,8 @@ the production Gaussian External adapter with one resident model process.
 The source copies and their hashes are documented in
 [`production/README.md`](production/README.md).
 
-The full HORM model code is pinned under `third_party/HORM`; the two local
-EquiformerV2 changes are preserved in [`model_architecture/`](model_architecture/).
+The local HORM code is included in [`horm/`](horm/) with its upstream license.
+The EquiformerV2 network file there already contains the two local changes.
 The model checkpoint is available from the release linked above. HORM and
 ReactBench authors, paper citations, and licenses are recorded in
 [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) and

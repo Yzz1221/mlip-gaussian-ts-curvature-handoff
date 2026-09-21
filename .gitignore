@@ -16,6 +16,7 @@ build/
 *.pth
 *.npy
 *.npz
+!horm/**/Jd.pt
 
 # Gaussian and scheduler outputs
 *.chk

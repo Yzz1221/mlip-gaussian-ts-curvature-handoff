@@ -1,0 +1,64 @@
+[build-system]
+requires = ["setuptools>=61.0", "versioningit~=2.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "horm"
+description = "HORM: Higher Order Reaction Mechanism"
+dynamic = ["version"]
+readme = "README.md"
+authors = [
+    { name = "Chenru Duan, and Yuanqi Du", email = "duanchenru@gmail.com" }
+]
+license = { text = "MIT" }
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+]
+requires-python = ">=3.10"
+dependencies = [
+    "torch-geometric==2.6.1",
+    "torch-scatter==2.1.2",
+    "torch-sparse==0.6.18",
+    "pytorch-lightning==2.4.0",
+    "e3nn==0.4.4",
+    "numpy==2.2.5",
+    "scipy==1.15.3",
+    "matplotlib==3.9.0",
+    "networkx==3.4.2",
+    "wandb==0.19.11",
+    "pydantic==2.11.4",
+    "opt-einsum-fx==0.1.4",
+    "triton==2.2.0",
+    "lmdb==1.5.1"
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=6.1.2",
+    "pytest-runner"
+]
+
+[tool.setuptools]
+zip-safe = false
+include-package-data = false
+
+[tool.setuptools.packages.find]
+namespaces = false
+where = ["."]
+
+[tool.setuptools.package-data]
+horm = [
+    "py.typed"
+]
+
+[tool.versioningit]
+default-version = "0.0.1"
+
+[tool.versioningit.vcs]
+method = "git"
+match = ["*"]
+default-tag = "0.0.1"
+
+[tool.versioningit.write]
+file = "horm/_version.py"

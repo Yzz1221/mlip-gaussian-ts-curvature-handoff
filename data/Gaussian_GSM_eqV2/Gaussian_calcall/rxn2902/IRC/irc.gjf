@@ -1,0 +1,9 @@
+%oldchk=../TS+Freq/ts_freq.chk
+%chk=irc.chk
+%nprocshared=4
+#P wB97X/6-31G(d) IRC(maxpoints=30,rcfc,LQA,stepsize=15) geom=allcheck
+
+GSM eqV2 pure Gaussian IRC from calcfc TS chk: rxn2902
+
+0 1
+

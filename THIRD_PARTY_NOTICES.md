@@ -51,7 +51,8 @@ files and attributes the source under the stated README/LICENSE terms.
   DOI `10.1038/s41597-022-01870-w`
 
 Prepared GSM and React-OT TS guesses for these benchmark reactions are
-provided separately in `data/gsm/` and `data/react_ot/`. These generated
-structures are not the original Transition1x reference TSs. Their counts and
-provenance are described in the main `README.md`.
+included in the Gaussian input trees `data/Gaussian_GSM_eqV2/` and
+`data/Gaussian_ReactOT_exact/`. These generated structures are not the
+original Transition1x reference TSs. Their counts and provenance are
+described in the main `README.md`.
 Optimization results and manuscript source data are not included.

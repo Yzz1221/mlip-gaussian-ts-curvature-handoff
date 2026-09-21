@@ -1,5 +1,7 @@
 import tempfile
 import unittest
+import subprocess
+import sys
 from pathlib import Path
 
 import numpy as np
@@ -39,6 +41,20 @@ class ExampleRunnerTests(unittest.TestCase):
             self.assertEqual(geometry.atomic_numbers.tolist(), [1, 8, 1])
             self.assertTrue(np.allclose(geometry.coordinates_angstrom, coordinates))
             self.assertIn("%nprocshared=2", output.read_text())
+
+    def test_packaged_external_input_keeps_charge_and_resolves_wrapper(self):
+        root = Path(__file__).resolve().parents[1]
+        with tempfile.TemporaryDirectory() as temporary:
+            output = Path(temporary) / "run"
+            subprocess.run([
+                sys.executable, str(root / "examples/run.py"),
+                "--workflow", "external_calcall", "--dataset", "gsm",
+                "--reaction", "rxn9", "--output", str(output), "--dry-run",
+            ], cwd=root, check=True, capture_output=True, text=True)
+            geometry = parse_gaussian_input(output / "opt_freq.gjf")
+            self.assertEqual((geometry.charge, geometry.multiplicity), (0, 1))
+            self.assertIn("External='./horm.sh'", (output / "opt_freq.gjf").read_text())
+            self.assertIn("%oldchk=ts_freq.chk", (output / "irc.gjf").read_text())
 
 
 if __name__ == "__main__":

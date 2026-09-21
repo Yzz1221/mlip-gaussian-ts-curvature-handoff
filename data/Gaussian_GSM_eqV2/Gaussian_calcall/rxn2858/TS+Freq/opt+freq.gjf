@@ -1,0 +1,14 @@
+%chk=ts_freq.chk
+%nprocshared=4
+#P wB97X/6-31G(d) opt(ts,calcall,noeigentest,nomicro,maxcycles=150) freq
+
+GSM eqV2 pure Gaussian calcall TS opt+freq: rxn2858
+
+0 1
+C   0.00884100  0.23707400 -0.22045300
+C   1.35382400 -0.00489500 -0.07793200
+N   2.49708700 -0.28597800  0.19738300
+H  -0.59822000 -0.45739900 -0.78719800
+H   1.15363600 -0.53860100  0.94701900
+H  -0.38650300  1.19110800  0.10261000
+

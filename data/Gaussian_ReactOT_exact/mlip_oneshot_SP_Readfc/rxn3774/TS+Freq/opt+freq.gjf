@@ -1,0 +1,6 @@
+%chk=mlip_readfc.chk
+%nprocshared=4
+#P wB97X/6-31G(d) opt(ts,readfc,noeigen,nomicro,maxcycles=150) freq Geom=AllCheck Guess=TCheck
+
+QM TS optimization with imported EquiformerV2 Hessian
+

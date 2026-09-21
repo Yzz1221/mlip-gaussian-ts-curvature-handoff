@@ -1,0 +1,14 @@
+%chk=ts_freq.chk
+%nprocshared=4
+#P wB97X/6-31G(d) opt(ts,calcfc,noeigentest,nomicro,maxcycles=150) freq
+
+ReactOT exact pure Gaussian calcfc TS opt+freq: rxn2858
+
+0 1
+C  -0.57246340  0.18186809 -0.38915720
+C   0.71285844 -0.01371680  0.01893127
+N   1.74221370 -0.27090004  0.56495090
+H  -1.07523230 -0.56649524 -0.98598903
+H   0.25643970 -0.46056366  1.00237300
+H  -1.06381610  1.12980770 -0.21110891
+

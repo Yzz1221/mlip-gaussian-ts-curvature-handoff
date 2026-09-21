@@ -1,0 +1,14 @@
+%chk=ts_freq.chk
+%nprocshared=4
+#P Opt=(TS,CalcAll,NoEigenTest,NoMicro,MaxCycles=150) Freq External='../../../../../production/external/horm.sh'
+
+External--CalcAll initial TS guess: rxn3705
+
+0 1
+C  -0.15520558 -0.43204394  0.30999020
+C   0.80248610 -1.02110720  0.93902240
+C   1.34105960  0.09336584 -0.00051661
+N   1.83838530  0.80699280 -0.74882716
+C  -1.37750890  0.09768873 -0.11179015
+N  -2.44921680  0.45510375 -0.38787866
+

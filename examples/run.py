@@ -22,7 +22,9 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 from mlip_gaussian_handoff.audit import classify_opt_freq  # noqa: E402
 from mlip_gaussian_handoff.gaussian_io import (  # noqa: E402
+    PERIODIC_SYMBOLS,
     SYMBOL_TO_Z,
+    parse_gaussian_input,
     read_fchk_array,
     read_fchk_int_array,
 )
@@ -38,6 +40,13 @@ WORKFLOWS = {
     "calcall": "gaussian_calcall",
     "oneshot": "mlip_oneshot_readfc",
     "external_calcall": "external_calcall",
+}
+DATASETS = {"gsm": "Gaussian_GSM_eqV2", "react_ot": "Gaussian_ReactOT_exact"}
+DATA_METHODS = {
+    "calcfc": "Gaussian_calcfc",
+    "calcall": "Gaussian_calcall",
+    "oneshot": "mlip_oneshot_SP_Readfc",
+    "external_calcall": "C_eqv2_EFH_gaussian_calcall",
 }
 
 
@@ -90,6 +99,24 @@ def render_input(
         ]
         lines = lines[:geometry_line] + [f"{charge} {multiplicity}"] + coordinate_lines
     target.write_text("\n".join(lines) + "\n\n", encoding="utf-8")
+
+
+def normalize_packaged_input(path: Path, workflow: str) -> None:
+    """Resolve source-tree checkpoint and External paths for a flat run directory."""
+    text = path.read_text(encoding="utf-8")
+    if path.name == "irc.gjf":
+        checkpoint = "mlip_readfc.chk" if workflow == "oneshot" else "ts_freq.chk"
+        text, count = re.subn(r"(?im)^%oldchk=.*$", f"%oldchk={checkpoint}", text, count=1)
+        if count != 1:
+            raise RuntimeError(f"Missing IRC checkpoint directive in {path}")
+    if workflow == "external_calcall":
+        text, count = re.subn(
+            r"(?i)external\s*=\s*(['\"]).*?\1",
+            "External='./horm.sh'", text, count=1,
+        )
+        if count != 1:
+            raise RuntimeError(f"Missing Gaussian External directive in {path}")
+    path.write_text(text, encoding="utf-8")
 
 
 def run_command(command: list[str], directory: Path, log: Path | None = None, env=None) -> None:
@@ -231,9 +258,11 @@ def production_network_installed() -> bool:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--workflow", required=True, choices=WORKFLOWS)
-    parser.add_argument("--xyz", required=True, type=Path, help="Initial TS guess, e.g. data/react_ot/rxn9.xyz")
-    parser.add_argument("--charge", required=True, type=int)
-    parser.add_argument("--multiplicity", required=True, type=int)
+    parser.add_argument("--dataset", choices=DATASETS, help="Use packaged GSM or React-OT Gaussian inputs")
+    parser.add_argument("--reaction", help="Reaction ID in the packaged dataset, e.g. rxn9")
+    parser.add_argument("--xyz", type=Path, help="An alternative initial TS guess XYZ")
+    parser.add_argument("--charge", type=int, help="Required with --xyz")
+    parser.add_argument("--multiplicity", type=int, help="Required with --xyz")
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--cores", type=int, default=4)
     parser.add_argument("--external-device", choices=("cpu", "cuda"), default="cuda",
@@ -241,9 +270,37 @@ def main() -> None:
     parser.add_argument("--dry-run", action="store_true", help="Write inputs without starting Gaussian or HORM")
     parser.add_argument("--skip-irc", action="store_true", help="Stop after Opt+Freq")
     args = parser.parse_args()
-    if args.cores < 1 or args.multiplicity < 1:
-        parser.error("--cores and --multiplicity must be positive")
-    atomic_numbers, coordinates, symbols = read_xyz(args.xyz)
+    if args.cores < 1:
+        parser.error("--cores must be positive")
+    if args.dataset or args.reaction:
+        if not args.dataset or not args.reaction or args.xyz:
+            parser.error("Use --dataset and --reaction together, without --xyz")
+        if not re.fullmatch(r"rxn[0-9]+", args.reaction):
+            parser.error("--reaction must be an ID such as rxn9")
+        source_root = ROOT / "data" / DATASETS[args.dataset] / DATA_METHODS[args.workflow] / args.reaction
+        geometry_source = (
+            ROOT / "data" / DATASETS[args.dataset] / "Gaussian_calcfc" /
+            args.reaction / "TS+Freq" / "opt+freq.gjf"
+            if args.workflow == "oneshot"
+            else source_root / "TS+Freq" / "opt+freq.gjf"
+        )
+        geometry = parse_gaussian_input(geometry_source)
+        atomic_numbers = geometry.atomic_numbers
+        coordinates = geometry.coordinates_angstrom
+        symbols = tuple(PERIODIC_SYMBOLS[number] for number in atomic_numbers)
+        charge, multiplicity = geometry.charge, geometry.multiplicity
+        sources = {
+            "opt_freq": source_root / "TS+Freq" / "opt+freq.gjf",
+            "irc": source_root / "IRC" / "irc.gjf",
+        }
+    else:
+        if args.xyz is None or args.charge is None or args.multiplicity is None:
+            parser.error("Use --dataset and --reaction, or supply --xyz, --charge and --multiplicity")
+        atomic_numbers, coordinates, symbols = read_xyz(args.xyz)
+        charge, multiplicity = args.charge, args.multiplicity
+        sources = {}
+    if multiplicity < 1:
+        parser.error("--multiplicity must be positive")
     if not args.dry_run:
         if not shutil.which("g16"):
             raise RuntimeError("Gaussian 16 (g16) is not available on PATH")
@@ -258,10 +315,13 @@ def main() -> None:
     directory.mkdir(parents=True, exist_ok=False)
     template_dir = TEMPLATES / WORKFLOWS[args.workflow]
     for name in ("opt_freq", "irc", "initial_sp"):
-        template = template_dir / f"{name}.gjf"
+        template = sources.get(name) or template_dir / f"{name}.gjf"
         if template.is_file():
-            render_input(template, directory / template.name, args.cores,
-                         atomic_numbers, coordinates, symbols, args.charge, args.multiplicity)
+            output = directory / f"{name}.gjf"
+            render_input(template, output, args.cores,
+                         atomic_numbers, coordinates, symbols, charge, multiplicity)
+            if args.dataset:
+                normalize_packaged_input(output, args.workflow)
 
     if args.dry_run:
         print(f"Wrote {args.workflow} Gaussian inputs to {directory}")

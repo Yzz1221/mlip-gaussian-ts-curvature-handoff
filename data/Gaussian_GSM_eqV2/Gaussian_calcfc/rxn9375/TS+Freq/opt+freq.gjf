@@ -1,0 +1,14 @@
+%chk=ts_freq.chk
+%nprocshared=4
+#P wB97X/6-31G(d) opt(ts,calcfc,noeigentest,nomicro,maxcycles=150) freq
+
+GSM eqV2 pure Gaussian calcfc TS opt+freq: rxn9375
+
+0 1
+C   0.10033100 -0.33469200 -0.05093500
+C   0.85476300 -0.46958300  0.80761900
+C   1.89761300 -0.56507400 -0.57876800
+N   2.89274700 -0.66697500 -1.17731400
+C  -1.12065600 -0.27910200 -0.72024700
+N  -2.13949700 -0.24376500 -1.26478900
+

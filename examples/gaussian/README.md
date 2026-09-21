@@ -2,10 +2,10 @@
 
 These four directories show the manuscript's Opt+Freq and IRC routes. The
 templates start from the same React-OT `rxn9` guess and use four Gaussian CPU
-cores. To run another structure, use `python examples/run.py` from the
-repository root with `--xyz`, `--charge`, `--multiplicity`, and `--output`.
-The runner inserts the chosen XYZ coordinates, prepares the model and
-checkpoint handoff where needed, and executes the selected route.
+cores. To run a packaged reaction, use `python examples/run.py` from the
+repository root with `--dataset`, `--reaction`, and `--output`.
+The runner reads that reaction's Gaussian geometry and charge, prepares the
+model and checkpoint handoff where needed, and executes the selected route.
 
 | Directory | Initial curvature | Optimization, Freq and IRC surface |
 |---|---|---|

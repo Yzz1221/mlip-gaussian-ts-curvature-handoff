@@ -30,17 +30,11 @@ from mlip_gaussian_handoff.gaussian_io import (  # noqa: E402
 )
 from mlip_gaussian_handoff.units import BOHR_TO_ANGSTROM  # noqa: E402
 
-TEMPLATES = ROOT / "examples" / "gaussian"
+SAMPLE_DATA = ROOT / "examples" / "Gaussian_ReactOT_exact"
 HORM = ROOT / "horm"
 MODEL = ROOT / "models" / "eqv2.ckpt"
 EXPECTED_MODEL_SHA256 = "6b5adb66776041a45ab85e5e496c3b1e37f2b102be31247384a8ee69ee56016a"
 EXPECTED_NETWORK_SHA256 = "62c7e11c4dfa15a74be816462049178c100c09ac77f90a9a9046c5de59f73a70"
-WORKFLOWS = {
-    "calcfc": "gaussian_calcfc",
-    "calcall": "gaussian_calcall",
-    "oneshot": "mlip_oneshot_readfc",
-    "external_calcall": "external_calcall",
-}
 DATASETS = {"gsm": "Gaussian_GSM_eqV2", "react_ot": "Gaussian_ReactOT_exact"}
 DATA_METHODS = {
     "calcfc": "Gaussian_calcfc",
@@ -117,6 +111,22 @@ def normalize_packaged_input(path: Path, workflow: str) -> None:
         if count != 1:
             raise RuntimeError(f"Missing Gaussian External directive in {path}")
     path.write_text(text, encoding="utf-8")
+
+
+def write_initial_sp(
+    path: Path, cores: int, symbols: tuple[str, ...], coordinates: np.ndarray,
+    charge: int, multiplicity: int,
+) -> None:
+    atoms = "\n".join(
+        f"{symbol:<2s} {xyz[0]:16.10f} {xyz[1]:16.10f} {xyz[2]:16.10f}"
+        for symbol, xyz in zip(symbols, coordinates)
+    )
+    path.write_text(
+        f"%chk=mlip_readfc_initial.chk\n%nprocshared={cores}\n"
+        "#P wB97X/6-31G(d) SP\n\n"
+        "Fixed-geometry checkpoint for OneShot Hessian handoff\n\n"
+        f"{charge} {multiplicity}\n{atoms}\n\n", encoding="utf-8",
+    )
 
 
 def run_command(command: list[str], directory: Path, log: Path | None = None, env=None) -> None:
@@ -257,9 +267,10 @@ def production_network_installed() -> bool:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--workflow", required=True, choices=WORKFLOWS)
+    parser.add_argument("--workflow", required=True, choices=DATA_METHODS)
     parser.add_argument("--dataset", choices=DATASETS, help="Use packaged GSM or React-OT Gaussian inputs")
     parser.add_argument("--reaction", help="Reaction ID in the packaged dataset, e.g. rxn9")
+    parser.add_argument("--example", action="store_true", help="Read the five-reaction examples instead of full data")
     parser.add_argument("--xyz", type=Path, help="An alternative initial TS guess XYZ")
     parser.add_argument("--charge", type=int, help="Required with --xyz")
     parser.add_argument("--multiplicity", type=int, help="Required with --xyz")
@@ -277,9 +288,10 @@ def main() -> None:
             parser.error("Use --dataset and --reaction together, without --xyz")
         if not re.fullmatch(r"rxn[0-9]+", args.reaction):
             parser.error("--reaction must be an ID such as rxn9")
-        source_root = ROOT / "data" / DATASETS[args.dataset] / DATA_METHODS[args.workflow] / args.reaction
+        collection = ROOT / ("examples" if args.example else "data")
+        source_root = collection / DATASETS[args.dataset] / DATA_METHODS[args.workflow] / args.reaction
         geometry_source = (
-            ROOT / "data" / DATASETS[args.dataset] / "Gaussian_calcfc" /
+            collection / DATASETS[args.dataset] / "Gaussian_calcfc" /
             args.reaction / "TS+Freq" / "opt+freq.gjf"
             if args.workflow == "oneshot"
             else source_root / "TS+Freq" / "opt+freq.gjf"
@@ -294,11 +306,17 @@ def main() -> None:
             "irc": source_root / "IRC" / "irc.gjf",
         }
     else:
+        if args.example:
+            parser.error("--example requires --dataset and --reaction")
         if args.xyz is None or args.charge is None or args.multiplicity is None:
             parser.error("Use --dataset and --reaction, or supply --xyz, --charge and --multiplicity")
         atomic_numbers, coordinates, symbols = read_xyz(args.xyz)
         charge, multiplicity = args.charge, args.multiplicity
-        sources = {}
+        sample_root = SAMPLE_DATA / DATA_METHODS[args.workflow] / "rxn9"
+        sources = {
+            "opt_freq": sample_root / "TS+Freq" / "opt+freq.gjf",
+            "irc": sample_root / "IRC" / "irc.gjf",
+        }
     if multiplicity < 1:
         parser.error("--multiplicity must be positive")
     if not args.dry_run:
@@ -313,15 +331,18 @@ def main() -> None:
                 raise RuntimeError("Run python examples/setup.py before the MLIP workflows")
     directory = args.output.resolve()
     directory.mkdir(parents=True, exist_ok=False)
-    template_dir = TEMPLATES / WORKFLOWS[args.workflow]
-    for name in ("opt_freq", "irc", "initial_sp"):
-        template = sources.get(name) or template_dir / f"{name}.gjf"
+    for name in ("opt_freq", "irc"):
+        template = sources[name]
         if template.is_file():
             output = directory / f"{name}.gjf"
             render_input(template, output, args.cores,
                          atomic_numbers, coordinates, symbols, charge, multiplicity)
-            if args.dataset:
-                normalize_packaged_input(output, args.workflow)
+            normalize_packaged_input(output, args.workflow)
+        else:
+            raise FileNotFoundError(template)
+    if args.workflow == "oneshot":
+        write_initial_sp(directory / "initial_sp.gjf", args.cores, symbols,
+                         coordinates, charge, multiplicity)
 
     if args.dry_run:
         print(f"Wrote {args.workflow} Gaussian inputs to {directory}")

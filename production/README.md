@@ -31,8 +31,9 @@ These archived runners include paths specific to the original cluster and
 expect the original Gaussian input tree. Before running elsewhere, set the
 model and Gaussian environment, replace the hard-coded source and scratch
 paths, and construct equivalent input directories from `data/`. The separate
-`examples/gaussian/` inputs show the four calculation routes and the IRC
-stage without imposing a particular cluster scheduler. Slurm submission
+`examples/Gaussian_GSM_eqV2/` and `examples/Gaussian_ReactOT_exact/` mirror
+the packaged data structure for five common reactions, showing all four
+calculation routes and the IRC stage. Slurm submission
 files are intentionally omitted.
 
 For a new reaction, use `python examples/run.py` from the repository root.

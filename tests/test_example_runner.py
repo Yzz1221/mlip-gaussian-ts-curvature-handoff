@@ -6,7 +6,7 @@ from pathlib import Path
 
 import numpy as np
 
-from examples.run import TEMPLATES, kabsch_row, read_xyz, render_input
+from examples.run import SAMPLE_DATA, kabsch_row, read_xyz, render_input
 from mlip_gaussian_handoff.gaussian_io import parse_gaussian_input
 
 
@@ -33,7 +33,7 @@ class ExampleRunnerTests(unittest.TestCase):
             numbers, coordinates, symbols = read_xyz(source)
             output = root / "opt_freq.gjf"
             render_input(
-                TEMPLATES / "gaussian_calcfc" / "opt_freq.gjf",
+                SAMPLE_DATA / "Gaussian_calcfc" / "rxn9" / "TS+Freq" / "opt+freq.gjf",
                 output, 2, numbers, coordinates, symbols, 1, 2,
             )
             geometry = parse_gaussian_input(output)
@@ -55,6 +55,19 @@ class ExampleRunnerTests(unittest.TestCase):
             self.assertEqual((geometry.charge, geometry.multiplicity), (0, 1))
             self.assertIn("External='./horm.sh'", (output / "opt_freq.gjf").read_text())
             self.assertIn("%oldchk=ts_freq.chk", (output / "irc.gjf").read_text())
+
+    def test_five_reaction_example_uses_example_tree(self):
+        root = Path(__file__).resolve().parents[1]
+        with tempfile.TemporaryDirectory() as temporary:
+            output = Path(temporary) / "run"
+            subprocess.run([
+                sys.executable, str(root / "examples/run.py"),
+                "--example", "--workflow", "oneshot", "--dataset", "react_ot",
+                "--reaction", "rxn53", "--output", str(output), "--dry-run",
+            ], cwd=root, check=True, capture_output=True, text=True)
+            self.assertEqual(len(list(output.glob("*.gjf"))), 3)
+            self.assertIn("%oldchk=mlip_readfc.chk", (output / "irc.gjf").read_text())
+            self.assertEqual(parse_gaussian_input(output / "initial_sp.gjf").charge, 0)
 
 
 if __name__ == "__main__":

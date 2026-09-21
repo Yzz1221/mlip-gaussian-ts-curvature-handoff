@@ -64,9 +64,19 @@ paper used four CPU cores for Gaussian and an A100 GPU for External--CalcAll;
 model have substantial runtime requirements, so use your own job scheduler to
 invoke `examples/run.py` on a compute node.
 
-The four Gaussian Opt+Freq and IRC routes are also shown separately in
-[`examples/gaussian/`](examples/gaussian/). No cluster submission scripts are
-required.
+For a small example, the [`examples/Gaussian_GSM_eqV2/`](examples/Gaussian_GSM_eqV2/)
+and [`examples/Gaussian_ReactOT_exact/`](examples/Gaussian_ReactOT_exact/)
+directories mirror the `data/` method and reaction layout. Each contains the
+same five reaction IDs (`rxn9`, `rxn26`, `rxn31`, `rxn39`, `rxn53`) for all four
+workflows. The `.gjf` files are copies of the packaged data inputs. Run one
+directly through the same entry point:
+
+```bash
+python examples/run.py --example --workflow oneshot \
+  --dataset react_ot --reaction rxn9 --output runs/example_oneshot_rxn9
+```
+
+No cluster submission scripts are required.
 
 ## Code and model provenance
 

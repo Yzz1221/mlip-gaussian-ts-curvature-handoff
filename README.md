@@ -185,3 +185,12 @@ Extract it with `tar -xzf data/transition1x_960.tar.gz -C data`.
 
 Please cite ReactBench, HORM, and Transition1x when using their code, model,
 or data; the ready-to-use entries are in [CITATIONS.bib](CITATIONS.bib).
+
+## Paper cohort timing and outcome tables
+
+The selected React-OT and GSM cohort IDs, original per-case timing fields,
+audited first-attempt outcomes, paired statistics and model configuration
+are available in [`data/paper_top100/`](data/paper_top100/).
+The directory README explains the timer boundaries, missing records and
+separation of first attempts from periodic-QM-Hessian rescue procedures.
+Run `python data/paper_top100/validate_tables.py` to check the published tables.

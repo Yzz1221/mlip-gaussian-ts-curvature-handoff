@@ -1,0 +1,7 @@
+dataset,workflow,N,primary_minus10,strict_minus50,minus10_only,minus50_only
+reactot,Gaussian--CalcFC,100,99,99,0,0
+reactot,Gaussian--CalcAll,100,97,97,0,0
+reactot,OneShot,100,98,99,0,1
+gsm,Gaussian--CalcFC,100,89,90,0,1
+gsm,Gaussian--CalcAll,100,95,95,0,0
+gsm,OneShot,100,87,88,0,1

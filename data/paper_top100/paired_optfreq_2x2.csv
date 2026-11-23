@@ -1,0 +1,13 @@
+dataset,baseline,target,criterion,00,01,10,11
+reactot,Gaussian--CalcFC,OneShot,paper_ok_minus_10,1,0,1,98
+reactot,Gaussian--CalcAll,OneShot,paper_ok_minus_10,1,2,1,96
+reactot,Gaussian--CalcFC,OneShot,gaussian_accepted_ok_minus_10,1,0,1,98
+reactot,Gaussian--CalcAll,OneShot,gaussian_accepted_ok_minus_10,1,0,1,98
+reactot,Gaussian--CalcFC,OneShot,strict_ok_minus_50,1,0,0,99
+reactot,Gaussian--CalcAll,OneShot,strict_ok_minus_50,0,3,1,96
+gsm,Gaussian--CalcFC,OneShot,paper_ok_minus_10,8,3,5,84
+gsm,Gaussian--CalcAll,OneShot,paper_ok_minus_10,4,1,9,86
+gsm,Gaussian--CalcFC,OneShot,gaussian_accepted_ok_minus_10,8,3,5,84
+gsm,Gaussian--CalcAll,OneShot,gaussian_accepted_ok_minus_10,3,0,10,87
+gsm,Gaussian--CalcFC,OneShot,strict_ok_minus_50,7,3,5,85
+gsm,Gaussian--CalcAll,OneShot,strict_ok_minus_50,3,2,9,86

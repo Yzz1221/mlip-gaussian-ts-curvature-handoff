@@ -1,0 +1,47 @@
+{
+  "checkpoint_filename": "eqv2.ckpt",
+  "model": "EquiformerV2 with energy-force-Hessian supervision",
+  "checkpoint_repository": "https://github.com/Yzz1221/mlip-gaussian-ts-curvature-handoff/tree/main/ckpt",
+  "configuration_file": "equiformer_v2.yml",
+  "effective_model_configuration": {
+    "use_pbc": false,
+    "regress_forces": true,
+    "otf_graph": true,
+    "max_neighbors": 20,
+    "max_radius": 12.0,
+    "max_num_elements": 90,
+    "num_layers": 4,
+    "sphere_channels": 128,
+    "attn_hidden_channels": 64,
+    "num_heads": 4,
+    "attn_alpha_channels": 64,
+    "attn_value_channels": 16,
+    "ffn_hidden_channels": 128,
+    "norm_type": "layer_norm_sh",
+    "lmax_list": [
+      4
+    ],
+    "mmax_list": [
+      2
+    ],
+    "grid_resolution": 18,
+    "num_sphere_samples": 128,
+    "edge_channels": 128,
+    "use_atom_edge_embedding": true,
+    "share_atom_edge_embedding": false,
+    "distance_function": "gaussian",
+    "num_distance_basis": 512,
+    "attn_activation": "silu",
+    "use_s2_act_attn": false,
+    "use_attn_renorm": true,
+    "ffn_activation": "silu",
+    "use_gate_act": false,
+    "use_grid_mlp": true,
+    "use_sep_s2_act": true,
+    "alpha_drop": 0.1,
+    "drop_path_rate": 0.1,
+    "proj_drop": 0.0,
+    "weight_init": "uniform"
+  },
+  "scope": "Configuration of the audited current-code loader. Original checkpoint metadata and historical execution-state limitations are recorded in provenance/model_split_audit.json. This does not establish the actual checkpoint training-reaction split."
+}

@@ -1,0 +1,59 @@
+{
+  "status": [
+    "DERIVED",
+    "VERIFIED"
+  ],
+  "release_date": "2026-11-23",
+  "scope": "Source tables for the fixed two Top-100 cohorts; primary first attempts only. No full-benchmark generalization, rescue cost, or uniformly matched IRC recovery claim.",
+  "canonical_parser": "analysis/audit_ts_freq_logs.py::classify",
+  "parser_sha256": "0750dfa5b9e23546136ff2aa1be0720179edd156935771aab13c91ae3dd85e11",
+  "primary_field": "paper_ok_minus_10",
+  "source_table_sha256": {
+    "cohort_ids.csv": "05a39381dafdd85eb4b7130ef912ea9d9f22b9797893b85010b926673abc5831",
+    "canonical_first_attempt_600.csv": "7c7d9b9909619208c82bd6fa5b6ab396d3f0042aa8cd7537f47f54c02e1ccf9e",
+    "input_route_timing_audit.csv": "97d0bec71e0c51ed100de3bb8450210ea52829a4d7a5531966f6c702ead5181d",
+    "external_control_audit.csv": "fa6c9a89346fe52cdc731ee5c07231cc9563cefd8d366b907ecb14195574eba5",
+    "external_verified_success_timing_cases.csv": "39effa04bc43732e8d69ca2e1fc2879053117e7e899d22ba75fdfae9c15d2164"
+  },
+  "recorded_timing_rows": 600,
+  "case_outcome_rows": 800,
+  "cohort_rows": 200,
+  "source_only_fields_omitted": [
+    "job_id",
+    "node"
+  ],
+  "recorded_timer_files_verified": 600,
+  "OptFreq_counts": {
+    "reactot": {
+      "Gaussian--CalcFC": 99,
+      "Gaussian--CalcAll": 97,
+      "OneShot": 98,
+      "External--CalcAll": 90
+    },
+    "gsm": {
+      "Gaussian--CalcFC": 89,
+      "Gaussian--CalcAll": 95,
+      "OneShot": 87,
+      "External--CalcAll": 86
+    }
+  },
+  "public_file_sha256": {
+    "external_control_paired_time_ratios.csv": "a5d4336a8d2382ab09aefcffa927aed28b1cca4bb22b2ae1f982fe9890e53651",
+    "cohort_ids.csv": "0b76f988fba970b20af397d524a6b0d485874183a24241825569afec8833ad9f",
+    "paired_timing_exclusions.csv": "393af0c51462b2db970191585c9c7f7df700a7d53b7ac0e64d88b86afc255bb1",
+    "paired_risk_difference_and_McNemar.csv": "72d244d4bc916a74a587506017a186091c2ee369d39c9a212bbb6539334bc809",
+    "frequency_threshold_summary.csv": "6a047cec4c946244a67fa2ab4f2971e815e8872b98307376166630d3de42276b",
+    "recorded_search_times.csv": "f29329dad557baf74df73de9024c4b59195eb183f78a2b1754d79760009b3ddb",
+    "optimization_outcomes.csv": "eec725e59efcb22147ec04ab709a7c64bff4bff3344463fbf1124b7432233ebc",
+    "recorded_timing_events.csv": "feaf851fed010c65322fd63808223622455db4159b220f176c258d059d2f31ff",
+    "paired_timing_case_ratios.csv": "58f8be2f22ae8b0d56ef65d53142fbbab6c72b29059479025c3a67d2f813d404",
+    "paired_optfreq_2x2.csv": "c7ef58bbe20eb829974ee92a713368aed8192dc58642268d8be1f641982d0051",
+    "paired_timing_statistics_newaudit.csv": "4caeee86d8415318a70e151745b0abe96e622e7dd38727947e39e0856b7a46b4",
+    "native_and_oneshot_frequency_fields.csv": "0ef60143b01bd979cbaa348a27c8a7e3a3d35ba837cd93eec38873ad6ff16bc5",
+    "validate_tables.py": "354796db5ac1bb76bb58b2fbab082dc82ba537cf6817094811c988040eb21629",
+    "README.md": "4200f62f23067702367521d40e5c93a65f45641e0ba1af26ef2b802863f409e1",
+    "external_source_timing_records.csv": "513ca73133d2a0ba5226de258cdcc83aeea9aa95dc63f449629d414453c6949f",
+    "model/equiformer_v2.yml": "603ca73c0a89410567d0ec156fe76b4dbe4f136f8c2bf03c1a56505ca6cf9b25",
+    "model/checkpoint_identifiers_and_configuration.json": "3641f8d1af7b0f9ac65c917144a4c2d16c96c3a4749efbacea807dcb9574aa7f"
+  }
+}
